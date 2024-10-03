@@ -13,32 +13,27 @@ jobs:
   sonarqube:
     working_directory: ~/build
     docker:
-      - image: circleci/python:3.8  # Change to a different image that supports apt-get
+      - image: sonarsource/sonar-scanner-cli  # Use the Sonar Scanner image directly
     resource_class: small
-    steps:  # Ensure this is aligned correctly
-      - run:
-          name: "Install required packages"
-          command: |
-            sudo apt-get update && \
-            sudo apt-get install -y git curl findutils
+    steps:
       - checkout
       - run:
           name: "Run find"
           command: find .
-      - attach_workspace:
-          at: ~/workspace
-      - run: |
-          SONAR_BRANCH="${CIRCLE_BRANCH:-master}"
-          echo "Sonar branch value is: " $SONAR_BRANCH
-          echo "Sonar org value is: "$SONAR_ORG
-          sonar-scanner \
-          -Dsonar.projectKey="$SONAR_PROJECT_KEY" \
-          -Dsonar.organization="$SONAR_ORG" \
-          -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.exclusions="**/android/**,**/ios/**" \
-          -Dsonar.login="$SONAR_TOKEN" \
-          -Dsonar.branch.name="$SONAR_BRANCH" \
-          -Dsonar.sources="."
+      - run:
+          name: "Run Sonar Scanner"
+          command: |
+            SONAR_BRANCH="${CIRCLE_BRANCH:-master}"
+            echo "Sonar branch value is: $SONAR_BRANCH"
+            echo "Sonar org value is: $SONAR_ORG"
+            sonar-scanner \
+            -Dsonar.projectKey="$SONAR_PROJECT_KEY" \
+            -Dsonar.organization="$SONAR_ORG" \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.exclusions="**/android/**,**/ios/**" \
+            -Dsonar.login="$SONAR_TOKEN" \
+            -Dsonar.branch.name="$SONAR_BRANCH" \
+            -Dsonar.sources="."
 
 workflows:
   say-hello-workflow:
