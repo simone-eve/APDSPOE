@@ -24,7 +24,7 @@ jobs:
       - image: sonarsource/sonar-scanner-cli
     resource_class: small
     steps:
-       - run: apk --no-cache add findutils
+      - run: apk --no-cache add findutils
       - attach_workspace:
           at: ~/workspace
       - run: |
