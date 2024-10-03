@@ -15,7 +15,7 @@ jobs:
     docker:
       - image: circleci/python:3.8  # Change to a different image that supports apt-get
     resource_class: small
-   steps:
+    steps:  # Ensure this is aligned correctly
       - run:
           name: "Install required packages"
           command: |
