@@ -13,14 +13,14 @@ jobs:
   sonarqube:
     working_directory: ~/build
     docker:
-      - image: sonarsource/sonar-scanner-cli
+      - image: circleci/python:3.8  # Change to a different image that supports apt-get
     resource_class: small
     steps:
       - run:
           name: "Install required packages"
           command: |
-            apk update && \
-            apk add --no-cache openssh-client git curl findutils
+            apt-get update && \
+            apt-get install -y git curl findutils
       - checkout
       - run:
           name: "Run find"
