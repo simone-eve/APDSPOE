@@ -5,17 +5,30 @@ version: 2.1
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/configuration-reference/#jobs
 jobs:
-  sonarqube:
-    working_directory: ~/build
+  say-hello:
+    # Specify the execution environment. You can specify an image from Docker Hub or use one of our convenience images from CircleCI's Developer Hub.
+    # See: https://circleci.com/docs/configuration-reference/#executor-job
     docker:
-      - image: sonarsource/sonar-scanner-cli:4.6-alpine
-    resource_class: small
+      - image: cimg/base:stable
+    # Add steps to the job
+    # See: https://circleci.com/docs/configuration-reference/#steps
     steps:
       - checkout
       - run:
-          name: "Install findutils"
-          command: |
-            apt-get update && apt-get install -y findutils
+          name: "Say hello"
+          command: "echo Hello, World!"
+
+  sonarqube:
+    working_directory: ~/build
+    docker:
+      - image: sonarsource/sonar-scanner-cli
+    resource_class: small
+    steps:
+      - run: apk update
+      - run: apk upgrade
+      - run: apk --no-cache add --update openssh git curl
+      - checkout
+      - run: find .
       - attach_workspace:
           at: ~/workspace
       - run: |
