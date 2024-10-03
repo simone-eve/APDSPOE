@@ -16,7 +16,15 @@ jobs:
       - image: sonarsource/sonar-scanner-cli
     resource_class: small
     steps:
-      - run: apk --no-cache add findutils
+      - run:
+          name: "Install required packages"
+          command: |
+            apk update && \
+            apk add --no-cache openssh-client git curl findutils
+      - checkout
+      - run:
+          name: "Run find"
+          command: find .
       - attach_workspace:
           at: ~/workspace
       - run: |
