@@ -25,7 +25,7 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard">
-      <h2>User Payments Dashboard</h2>
+      <h3>User Payments Dashboard</h3>
       <table>
         <thead>
           <tr>
