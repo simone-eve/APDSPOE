@@ -9,7 +9,7 @@ jobs:
     # Specify the execution environment. You can specify an image from Docker Hub or use one of our convenience images from CircleCI's Developer Hub.
     # See: https://circleci.com/docs/configuration-reference/#executor-job
     docker:
-      - image: cimg/base:stable
+      - image: cimg/base:current
     # Add steps to the job
     # See: https://circleci.com/docs/configuration-reference/#steps
     steps:
@@ -24,7 +24,7 @@ jobs:
       - image: sonarsource/sonar-scanner-cli
     resource_class: small
     steps:
-      - run: apk --no-cache add findutils
+      - run: find .
       - attach_workspace:
           at: ~/workspace
       - run: |
