@@ -61,7 +61,7 @@ const Register = () => {
         </div>
         {error && <p style={{ color: 'red' }}>{error}</p>}
         {success && <p style={{ color: 'green' }}>{success}</p>}
-        <button type="submit">Register</button>
+        <button type="Submit">Register</button>
       </form>
     </div>
   );
