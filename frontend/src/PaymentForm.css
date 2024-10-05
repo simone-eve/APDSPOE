@@ -13,7 +13,7 @@ body {
     max-width: 600px; /* Limit the width of the form */
     margin: 0 auto; /* Center the form on the page */
     padding: 30px; /* Add padding for better spacing */
-    background-color: #fff; /* White background for the form */
+    background-color: #8f8d8d; /* White background for the form */
     border-radius: 8px; /* Rounded corners */
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
     border: 1px solid #e0e0e0; /* Light border */
@@ -21,7 +21,7 @@ body {
 
 h1 {
     text-align: center; /* Center the heading */
-    color: #333; /* Darker text color */
+    color: #f8f2f2; /* Darker text color */
     margin-bottom: 20px; /* Space below the heading */
     font-size: 24px; /* Increase heading font size */
 }
@@ -29,7 +29,7 @@ h1 {
 label {
     display: block; /* Make labels block elements */
     margin-bottom: 8px; /* Space below labels */
-    color: #555; /* Gray text for labels */
+    color: #0e0d0d; /* Gray text for labels */
     font-weight: bold; /* Bold text for labels */
 }
 
@@ -75,3 +75,15 @@ button:hover {
         width: 90%; /* Responsive width on smaller screens */
     }
 }
+
+
+
+#message {
+    color: black; /* Ensure the font color is black */
+    margin-top: 20px; /* Space above the message */
+    font-size: 16px; /* Adjust font size */
+    font-weight: bold; /* Make the message bold */
+    text-align: center; /* Center align the text */
+}
+
+
