@@ -30,7 +30,9 @@ jobs:
             -Dsonar.exclusions="**/android/**,**/ios/**" \
             -Dsonar.login="$SONAR_TOKEN" \
             -Dsonar.branch.name="$SONAR_BRANCH" \
-            -Dsonar.sources="."
+            -Dsonar.sources="." \
+            -Dsonar.java.binaries=build  # If using Java, specify the binaries path
+            # Add any additional Sonar properties here
 
 workflows:
   say-hello-workflow:
