@@ -41,6 +41,4 @@ workflows:
   test-and-analyze:
     jobs:
       - say-hello
-      - sonarqube:
-          requires:
-            - run-tests
+      - sonarqube
