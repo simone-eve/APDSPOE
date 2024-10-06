@@ -1,7 +1,9 @@
 import React from 'react';
 import './Dashboard.css';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   // Sample data for the payments table
   const payments = [
     {
@@ -48,7 +50,7 @@ const Dashboard = () => {
           ))}
         </tbody>
       </table>
-      <button className="new-payment-button">Make New Payment</button>
+      <button onClick={()=>navigate("/PaymentForm")}>Make New Payment</button>
     </div>
   );
 };
