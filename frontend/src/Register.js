@@ -8,6 +8,7 @@ const Register = () => {
   const [fullName, setFullName] = useState('');
   const [idNumber, setIdNumber] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
+  const [userId, setUserId] = useState(''); // New state for userId
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
@@ -28,9 +29,14 @@ const Register = () => {
       return;
     }
 
+    // Generate a unique userId, for example, using the current timestamp
+    const uniqueUserId = `user_${Date.now()}`; // You can customize this ID generation logic as needed
+    setUserId(uniqueUserId);
+
     try {
       // Send data to the backend for registration
       const response = await axios.post('http://localhost:3000/api/register', {
+        userId: uniqueUserId, // Include userId in the request
         fullName,
         idNumber,
         accountNumber,
@@ -128,7 +134,6 @@ const Register = () => {
         {error && <p className="error-message">{error}</p>}
         {success && <p className="success-message">{success}</p>}
         <button type="submit">Register</button>
-
         <button onClick={() => navigate("/Login")}>Login</button>
       </form>
     </div>

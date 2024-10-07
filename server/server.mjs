@@ -4,16 +4,13 @@ import { MongoClient } from 'mongodb';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import bcrypt from 'bcrypt';
-import ExpressBrute from 'express-brute'; 
-import helmet from 'helmet';
 
 const app = express();
-const port = 3002; // Set your preferred port
+const port = 3000; // Set your preferred port
 
 // Middleware
 app.use(bodyParser.json());
 app.use(cors());
-app.use(helmet());
 
 // MongoDB setup
 const url = 'mongodb://localhost:27017'; // Base MongoDB connection string without database
@@ -26,27 +23,17 @@ async function connectToDb() {
   } catch (error) {
     console.error('MongoDB connection failed:', error);
     process.exit(1);
-    
   }
 }
 
 connectToDb();
 
-// Set up brute-force protection using in-memory storage (not recommended for production)
-const store = new ExpressBrute.MemoryStore(); 
-const bruteForce = new ExpressBrute(store, {
-  freeRetries: 5, // Allow up to 5 attempts
-  minWait: 60 * 60 * 1000,  // 5 seconds wait after failed attempts
-  maxWait: 60 * 60 * 1000, // Maximum 1-minute wait
-  lifetime: 60 * 60, // 1 hour before the retry count resets
-});
-
 // POST endpoint to handle user registration
-app.post('/api/register', bruteForce.prevent, async (req, res) => {
-  const { fullName, idNumber, accountNumber, password } = req.body;
+app.post('/api/register', async (req, res) => {
+  const { userId, fullName, idNumber, accountNumber, password } = req.body;
 
   // Validate user input
-  if (!fullName || !idNumber || !accountNumber || !password) {
+  if (!userId || !fullName || !idNumber || !accountNumber || !password) {
     return res.status(400).json({ message: 'All fields are required' });
   }
 
@@ -65,6 +52,7 @@ app.post('/api/register', bruteForce.prevent, async (req, res) => {
 
     // Create a new user object
     const newUser = {
+      userId, // Save userId to the database
       fullName,
       idNumber,
       accountNumber,
@@ -79,6 +67,7 @@ app.post('/api/register', bruteForce.prevent, async (req, res) => {
     res.status(500).json({ message: 'Failed to register user', error: error.message });
   }
 });
+
 
 // POST endpoint to handle payment form submission
 app.post('/api/payments', async (req, res) => {
@@ -102,7 +91,7 @@ app.post('/api/payments', async (req, res) => {
 });
 
 // POST endpoint to handle user login
-app.post('/api/login', bruteForce.prevent, async (req, res) => {
+app.post('/api/login', async (req, res) => {
   const { fullName, accountNumber, password } = req.body;
 
   // Validate input
