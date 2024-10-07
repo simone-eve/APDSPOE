@@ -4,6 +4,7 @@ import { MongoClient } from 'mongodb';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import bcrypt from 'bcrypt';
+import ExpressBrute from 'express-brute'; // Import express-brute
 
 const app = express();
 const port = 3000; // Set your preferred port
@@ -28,8 +29,17 @@ async function connectToDb() {
 
 connectToDb();
 
+// Set up brute-force protection using in-memory storage (not recommended for production)
+const store = new ExpressBrute.MemoryStore(); 
+const bruteForce = new ExpressBrute(store, {
+  freeRetries: 5, // Allow up to 5 attempts
+  minWait: 5000,  // 5 seconds wait after failed attempts
+  maxWait: 60000, // Maximum 1-minute wait
+  lifetime: 60 * 60, // 1 hour before the retry count resets
+});
+
 // POST endpoint to handle user registration
-app.post('/api/register', async (req, res) => {
+app.post('/api/register', bruteForce.prevent, async (req, res) => {
   const { fullName, idNumber, accountNumber, password } = req.body;
 
   // Validate user input
@@ -89,7 +99,7 @@ app.post('/api/payments', async (req, res) => {
 });
 
 // POST endpoint to handle user login
-app.post('/api/login', async (req, res) => {
+app.post('/api/login', bruteForce.prevent, async (req, res) => {
   const { fullName, accountNumber, password } = req.body;
 
   // Validate input
