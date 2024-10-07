@@ -68,7 +68,6 @@ app.post('/api/register', async (req, res) => {
   }
 });
 
-
 // POST endpoint to handle payment form submission
 app.post('/api/payments', async (req, res) => {
   try {
@@ -78,7 +77,7 @@ app.post('/api/payments', async (req, res) => {
     // Extract payment data from the request body
     const paymentData = {
       ...req.body,
-      userId: req.body.userId || null, // Accept userId, or set to null
+      userId: req.body.userId  // Accept userId, or set to null
     };
 
     // Insert the payment data into the collection
@@ -116,12 +115,29 @@ app.post('/api/login', async (req, res) => {
     }
 
     // Successful login, return user info
-    res.status(200).json({ message: 'Login successful', userId: user._id }); // Send user ID or any relevant info
+    res.status(200).json({ message: 'Login successful', userId: user.userId }); // Send user ID or any relevant info
   } catch (error) {
     console.error('Error logging in:', error);
     res.status(500).json({ message: 'Failed to log in', error: error.message });
   }
 });
+
+
+app.get('/api/payments/:userId', async (req, res) => {
+  const { userId } = req.params;
+  console.log("Received userId:", userId); // Debugging
+  try {
+    const database = client.db('APD');
+    const collection = database.collection('PaymentForm');
+    const userPayments = await collection.find({ userId }).toArray();
+    res.status(200).json(userPayments);
+  } catch (error) {
+    console.error('Error fetching user payments:', error);
+    res.status(500).json({ message: 'Failed to fetch payments', error });
+  }
+});
+
+
 
 // Start the server
 app.listen(port, () => {

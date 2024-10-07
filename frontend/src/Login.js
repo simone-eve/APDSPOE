@@ -38,8 +38,9 @@ const Login = () => {
             const data = await response.json();
 
             if (response.ok) {
-                // Successful login, navigate to dashboard
-                navigate('/dashboard');
+                // Successful login, store user ID in local storage
+                localStorage.setItem('userId', data.userId); // Store user ID
+                navigate('/dashboard'); // Navigate to dashboard
             } else {
                 // Handle error, e.g., show a message to the user
                 setError(data.message);
