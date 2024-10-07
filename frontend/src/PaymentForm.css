@@ -12,8 +12,8 @@ body {
 .PaymentForm {
     max-width: 600px; /* Limit the width of the form */
     margin: 0 auto; /* Center the form on the page */
-    padding: 30px; /* Add padding for better spacing */
-    background-color: #8f8d8d; /* White background for the form */
+    padding: 50px; /* Add padding for better spacing */
+    background-color: #ffffff; /* White background for the form */
     border-radius: 8px; /* Rounded corners */
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
     border: 1px solid #e0e0e0; /* Light border */
@@ -21,7 +21,7 @@ body {
 
 h1 {
     text-align: center; /* Center the heading */
-    color: #f8f2f2; /* Darker text color */
+    color: #0056b3; /* Darker text color */
     margin-bottom: 20px; /* Space below the heading */
     font-size: 24px; /* Increase heading font size */
 }
