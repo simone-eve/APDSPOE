@@ -1,4 +1,6 @@
 version: 2.1
+orbs:
+  newman: postman/newman@1.0.0
 
 jobs:
   # Job to say hello
@@ -38,21 +40,16 @@ jobs:
   # Job to run Postman tests
   postman-tests:
     docker:
-      - image: node:18  # Use a Node.js image for Newman
+      - image: newman/postman-newman-docker  # Specify the Docker image
     steps:
       - checkout
-      - run:
-          name: "Install Newman"
-          command: npm install -g newman
-      - run:
-          name: "Run Postman Tests"
-          environment:
-            NO_PROXY: "localhost,127.0.0.1"  # Ensure this line is correctly indented
-          command: newman run server/tests/APDS.PART2.postman_collection.json --insecure
+      - newman/newman-run:
+          collection: server/tests/APDS.PART2.postman_collection.json --insecure
+          environment: server/tests/APDS-Environment.postman_environment.json
 
 workflows:
   say-hello-workflow:
     jobs:
       - say-hello
       - sonarqube
-      - postman-tests 
+      - postman-tests

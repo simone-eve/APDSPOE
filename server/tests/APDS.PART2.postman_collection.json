@@ -8,12 +8,37 @@
 	"item": [
 		{
 			"name": "RegisterRequest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check response message\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.message).to.eql(\"User registered successfully\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"InsertedId is present\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property(\"insertedId\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"userId\": \"test\",\r\n  \"fullName\": \"John\",\r\n  \"idNumber\": \"1092387456766\",\r\n  \"accountNumber\": \"9999\",\r\n  \"password\": \"12345678\"\r\n}",
+					"raw": "{\r\n  \"userId\": \"test\",\r\n  \"fullName\": \"manny\",\r\n  \"idNumber\": \"1192287400733\",\r\n  \"accountNumber\": \"9999\",\r\n  \"password\": \"12345678\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -21,14 +46,11 @@
 					}
 				},
 				"url": {
-					"raw": "https://localhost:3000/api/register",
-					"protocol": "https",
+					"raw": "{{api_url}}/register",
 					"host": [
-						"localhost"
+						"{{api_url}}"
 					],
-					"port": "3000",
 					"path": [
-						"api",
 						"register"
 					]
 				}
@@ -37,6 +59,31 @@
 		},
 		{
 			"name": "LoginRequest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains success message\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.message).to.eql(\"Login successful\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains userId\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property(\"userId\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -50,14 +97,11 @@
 					}
 				},
 				"url": {
-					"raw": "https://localhost:3000/api/login",
-					"protocol": "https",
+					"raw": "{{api_url}}/login",
 					"host": [
-						"localhost"
+						"{{api_url}}"
 					],
-					"port": "3000",
 					"path": [
-						"api",
 						"login"
 					]
 				}
