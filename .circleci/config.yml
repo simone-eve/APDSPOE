@@ -40,7 +40,7 @@ jobs:
   # Job to run Postman tests
   postman-tests:
     docker:
-      - image: newman/postman-newman-docker  # Specify the Docker image
+      - image: node:18  # Specify the Docker image
     steps:
       - checkout
       - newman/newman-run:
