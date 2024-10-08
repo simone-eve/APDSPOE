@@ -1,6 +1,7 @@
 version: 2.1
 
 jobs:
+  # Job to say hello
   say-hello:
     docker:
       - image: cimg/base:stable
@@ -10,6 +11,7 @@ jobs:
           name: "Say hello"
           command: "echo Hello, World!"
 
+  # Job to run SonarQube analysis
   sonarqube:
     working_directory: ~/build
     docker:
@@ -32,10 +34,24 @@ jobs:
             -Dsonar.branch.name="$SONAR_BRANCH" \
             -Dsonar.sources="." \
             -Dsonar.java.binaries=build  # If using Java, specify the binaries path
-            # Add any additional Sonar properties here
+
+  # Job to run unit tests
+  test:
+    docker:
+      - image: circleci/node:16  # Use Node.js Docker image for running tests
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run:
+          name: "Install dependencies"
+          command: npm install  # Ensure this matches your setup (e.g., package.json dependencies)
+      - run:
+          name: "Run unit tests"
+          command: npm test  # Make sure to have the test script set up in package.json
 
 workflows:
   say-hello-workflow:
     jobs:
       - say-hello
       - sonarqube
+      - test
