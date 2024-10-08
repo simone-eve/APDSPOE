@@ -13,6 +13,7 @@ const PaymentForm = () => {
     const [swiftCode, setSwiftCode] = useState('');
     const [message, setMessage] = useState(''); // State to store success/failure messages
     const [userId, setUserId] = useState(null); // State to store userId
+    const [success, setSuccess] = useState('');
 
     // Regex patterns for input whitelisting
     const nameRegex = /^[a-zA-Z\s]*$/; // Only letters and spaces
@@ -31,6 +32,7 @@ const PaymentForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setSuccess('');
 
         if (!userId) {
             setMessage('User is not logged in. Please log in to continue.');
@@ -67,6 +69,10 @@ const PaymentForm = () => {
                 console.error('Server response error:', errorData); // Debug server error
                 throw new Error(`Network response was not ok: ${errorData.message}`);
             }
+            if (response.status === 201) {
+                setSuccess('Payment submitted successfully!');
+                // Optionally, reset the form or redirect the user
+              }
 //___________end___________
             const result = await response.json();
             console.log('Payment submitted successfully:', result); 

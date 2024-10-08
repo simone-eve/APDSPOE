@@ -75,6 +75,7 @@ const Dashboard = () => {
         <p>No payment records found.</p>
       )}
       <button onClick={() => navigate("/PaymentForm")}>Make New Payment</button>
+      <button onClick={() => navigate("/")}>Sign Out</button>
     </div>
   );
 };
