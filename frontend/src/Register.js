@@ -35,10 +35,8 @@ const Register = () => {
 
     try {
       // Send data to the backend for registration
-      
       const response = await axios.post('https://localhost:3000/api/register', {
-        userId: uniqueUserId, // Include userId in the request
-
+        userId: finalUserId, // Include the correct userId in the request
         fullName,
         idNumber,
         accountNumber,
@@ -83,6 +81,7 @@ const Register = () => {
       setError('Account Number can only contain digits.');
     }
   };
+
   const handlePasswordChange = (e) => {
     if (passwordRegex.test(e.target.value)) {
       setAccountNumber(e.target.value);
@@ -90,6 +89,7 @@ const Register = () => {
       setError('Account Number can only contain digits.');
     }
   };
+
 
   return (
     <div className="register-form-container">
