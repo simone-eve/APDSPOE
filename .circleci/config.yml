@@ -40,15 +40,13 @@ jobs:
   # Job to run Postman tests
   postman-tests:
     docker:
-      - image: node:18  # Specify the Docker image
+      - image: postman/newman:latest  # Use the official Newman Docker image
     steps:
       - checkout
-      - run:
-          name: Install Newman
-          command: npm install -g newman
-      - run:
-          name: Run Newman Tests
-          command: newman run server/tests/APDS.PART2.postman_collection.json --insecure --environment server/tests/APDS-Environment.postman_environment.json
+      - newman/newman-run:
+          collection: server/tests/APDS.PART2.postman_collection.json
+          environment: server/tests/APDS-Environment.postman_environment.json
+          insecure: true  # If you're running in a non-HTTPS environment
           
 
 workflows:
