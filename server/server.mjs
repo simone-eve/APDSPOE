@@ -9,7 +9,7 @@ import bcrypt from 'bcrypt';
 import ExpressBrute from 'express-brute';
 import helmet from 'helmet';
 import morgan from 'morgan';
-//import rateLimit from 'express-rate-limit';
+import rateLimit from 'express-rate-limit';
 import { body, validationResult } from 'express-validator';
 
 const app = express();
@@ -51,18 +51,18 @@ const bruteForce = new ExpressBrute(store, {
   lifetime: 60 * 60, // 1 hour before the retry count resets
 });
 
-// const apiLimiter = rateLimit({
-//   windowMs: 15 * 60 * 1000, // 15 minutes
-//   max: 100, // Limit each IP to 100 requests per windowMs
-//   message: 'Too many requests from this IP, please try again after 15 minutes',
-//   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-//   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-// });
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again after 15 minutes',
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
 
-// // Apply the rate limiter to specific routes
-// app.use('/api/register', apiLimiter); // Apply to registration
-// app.use('/api/login', apiLimiter); // Apply to login
-// app.use('/api/payments', apiLimiter); // Apply to payment submission
+// Apply the rate limiter to specific routes
+app.use('/api/register', apiLimiter); // Apply to registration
+app.use('/api/login', apiLimiter); // Apply to login
+app.use('/api/payments', apiLimiter); // Apply to payment submission
 
 // POST endpoint to handle user registration
 app.post('/api/register', bruteForce.prevent,  [
