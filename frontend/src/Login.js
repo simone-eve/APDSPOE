@@ -7,13 +7,15 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
-
+ //___________code attribution___________
+//The following code was taken from RexEgg
+//Author:  RexEgg
+//Link: https://www.rexegg.com/regex-quickstart.php
     // Regex patterns for whitelisting
-    const nameRegex = /^[a-zA-Z\s]*$/; // Allows only letters and spaces
-    const accountNumberRegex = /^[0-9]*$/; // Allows only numbers
-
+    const nameRegex = /^[a-zA-Z\s]*$/; 
+    const accountNumberRegex = /^[0-9]*$/; 
     const passwordRegex = /^[A-Za-z\d@$!%*#?&]{8,}$/;
-
+//___________end___________
 
     const handleLogin = async (e) => {
         e.preventDefault();
