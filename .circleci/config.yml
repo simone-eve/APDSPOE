@@ -35,23 +35,22 @@ jobs:
             -Dsonar.sources="." \
             -Dsonar.java.binaries=build  # If using Java, specify the binaries path
 
-  # Job to run unit tests
-  test:
+  # Job to run Postman tests
+  postman-tests:
     docker:
-      - image: circleci/node:16  # Use Node.js Docker image for running tests
-    working_directory: ~/repo
+      - image: cimg/node:14  # Use a Node.js image for Newman
     steps:
       - checkout
       - run:
-          name: "Install dependencies"
-          command: npm install  # Ensure this matches your setup (e.g., package.json dependencies)
+          name: "Install Newman"
+          command: npm install -g newman
       - run:
-          name: "Run unit tests"
-          command: npm test  # Make sure to have the test script set up in package.json
+          name: "Run Postman Tests"
+          command: newman run server/tests/APDS_PART2.postman_collection.json --reporters cli,html --reporter-html-export ./newman/report.html
 
 workflows:
   say-hello-workflow:
     jobs:
       - say-hello
       - sonarqube
-      - test
+      - postman-tests 
