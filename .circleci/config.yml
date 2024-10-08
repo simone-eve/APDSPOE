@@ -38,7 +38,7 @@ jobs:
   # Job to run Postman tests
   postman-tests:
     docker:
-      - image: cimg/node:18  # Use a Node.js image for Newman
+      - image: node:18  # Use a Node.js image for Newman
     steps:
       - checkout
       - run:
