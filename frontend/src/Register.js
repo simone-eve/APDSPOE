@@ -18,6 +18,7 @@ const Register = () => {
   const nameRegex = /^[a-zA-Z\s]*$/; // Allows letters and spaces
   const idNumberRegex = /^[0-9]*$/; // Allows digits only
   const accountNumberRegex = /^[0-9]*$/; // Allows digits only for account number
+  const passwordRegex = /^[A-Za-z\d@$!%*#?&]{8,}$/;
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -80,7 +81,15 @@ const Register = () => {
       setError('Account Number can only contain digits.');
     }
   };
-  
+
+  const handlePasswordChange = (e) => {
+    if (passwordRegex.test(e.target.value)) {
+      setAccountNumber(e.target.value);
+    } else {
+      setError('Account Number can only contain digits.');
+    }
+  };
+
 
   return (
     <div className="register-form-container">
