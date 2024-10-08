@@ -48,8 +48,8 @@ jobs:
           command: npm install -g newman
       - run:
           name: Run Newman Tests
-          command: newman run server/tests/APDS.PART2.postman_collection.json --insecure 
-          environment: server/tests/APDS-Environment.postman_environment.json
+          command: newman run server/tests/APDS.PART2.postman_collection.json --insecure --environment server/tests/APDS-Environment.postman_environment.json
+          
 
 workflows:
   say-hello-workflow:
