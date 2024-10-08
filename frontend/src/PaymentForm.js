@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './PaymentForm.css'; // Import the CSS file
+import { useNavigate } from 'react-router-dom';
 
 const PaymentForm = () => {
+    const navigate = useNavigate();
     const [amount, setAmount] = useState('');
     const [currency, setCurrency] = useState('USD');
     const [provider, setProvider] = useState('SWIFT');
@@ -10,14 +12,30 @@ const PaymentForm = () => {
     const [bankName, setBankName] = useState('');
     const [swiftCode, setSwiftCode] = useState('');
     const [message, setMessage] = useState(''); // State to store success/failure messages
+    const [userId, setUserId] = useState(null); // State to store userId
 
     // Regex patterns for input whitelisting
     const nameRegex = /^[a-zA-Z\s]*$/; // Only letters and spaces
     const accountNumberRegex = /^[0-9]*$/; // Only numbers
     const swiftCodeRegex = /^[A-Z0-9]*$/; // Only uppercase letters and numbers
 
+    // Retrieve userId from local storage when the component mounts
+    useEffect(() => {
+        const storedUserId = localStorage.getItem('userId');
+        if (storedUserId) {
+            setUserId(storedUserId); // Set the userId from local storage
+        } else {
+            setMessage('No user logged in.');
+        }
+    }, []);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!userId) {
+            setMessage('User is not logged in. Please log in to continue.');
+            return;
+        }
 
         const paymentData = {
             amount: parseFloat(amount), // Ensure amount is a number
@@ -27,8 +45,9 @@ const PaymentForm = () => {
             accountNumber,
             bankName,
             swiftCode,
-            userId: null, // Currently null, but can be set dynamically later
+            userId, // Use the userId stored in state
             dateTime: new Date().toISOString(), // Automatically set date and time
+            verification: 'pending', // Set verification to pending
         };
 
         try {
@@ -42,10 +61,12 @@ const PaymentForm = () => {
 
             if (!response.ok) {
                 const errorData = await response.json();
+                console.error('Server response error:', errorData); // Debug server error
                 throw new Error(`Network response was not ok: ${errorData.message}`);
             }
 
             const result = await response.json();
+            console.log('Payment submitted successfully:', result); // Debug successful submission
             setMessage('Payment recorded successfully!'); // Set success message
 
             // Optionally reset form fields
@@ -94,6 +115,18 @@ const PaymentForm = () => {
                     <label>
                         Currency:
                         <select value={currency} onChange={(e) => setCurrency(e.target.value)}>
+                            {/* Currency options... */}
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                            <option value="GBP">GBP</option>
+                            {/* Add more currencies as needed */}
+                        </select>
+                    </label>
+                </div>
+                <div>
+                    <label>
+                        Provider:
+                        <select value={provider} onChange={(e) => setProvider(e.target.value)}>
                         <option value="USD">USD</option>
                             <option value="EUR">EUR</option>
                             <option value="GBP">GBP</option>
@@ -266,16 +299,18 @@ const PaymentForm = () => {
                     </label>
                 </div>
                 <div>
-                    <label>
-                        Account Number:
-                        <input
-                            type="text"
-                            value={accountNumber}
-                            onChange={handleInputChange(setAccountNumber, accountNumberRegex)}
-                            required
-                        />
-                    </label>
-                </div>
+  <label>
+    Account Number:
+    <input
+      type="text"
+      value={accountNumber}
+      onChange={handleInputChange(setAccountNumber, accountNumberRegex)}
+      placeholder="Enter numbers only" // Updated placeholder text
+      required
+    />
+  </label>
+</div>
+
                 <div>
                     <label>
                         Bank Name:
@@ -288,17 +323,26 @@ const PaymentForm = () => {
                     </label>
                 </div>
                 <div>
-                    <label>
-                        SWIFT Code:
-                        <input
-                            type="text"
-                            value={swiftCode}
-                            onChange={handleInputChange(setSwiftCode, swiftCodeRegex)}
-                            required
-                        />
-                    </label>
-                </div>
-                <button type="submit" disabled={!isAmountValid()}>Pay Now</button>
+    <label>
+        SWIFT Code:
+        <input
+            type="text"
+            value={swiftCode}
+            onChange={handleInputChange(setSwiftCode, swiftCodeRegex)}
+            placeholder="Capital letters and numbers only"
+            required
+        />
+    </label>
+
+</div>
+
+                <button type="submit" disabled={!isAmountValid()}>
+                    Submit Payment
+                </button>
+
+                <button type="button" onClick={() => navigate("/Dashboard")}>
+                    Go to Dashboard
+                </button>
             </form>
         </div>
     );
