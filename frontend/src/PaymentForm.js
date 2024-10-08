@@ -118,18 +118,6 @@ const PaymentForm = () => {
                     <label>
                         Currency:
                         <select value={currency} onChange={(e) => setCurrency(e.target.value)}>
-                            {/* Currency options... */}
-                            <option value="USD">USD</option>
-                            <option value="EUR">EUR</option>
-                            <option value="GBP">GBP</option>
-                            {/* Add more currencies as needed */}
-                        </select>
-                    </label>
-                </div>
-                <div>
-                    <label>
-                        Provider:
-                        <select value={provider} onChange={(e) => setProvider(e.target.value)}>
                         <option value="USD">USD</option>
                             <option value="EUR">EUR</option>
                             <option value="GBP">GBP</option>
@@ -287,6 +275,14 @@ const PaymentForm = () => {
                             <option value="YER">Yemeni Rial</option>
                             <option value="ZMW">Zambian Kwacha</option>
                             <option value="ZWL">Zimbabwean Dollar</option>
+                        </select>
+                    </label>
+                </div>
+                <div>
+                    <label>
+                        Provider:
+                        <select value={provider} onChange={(e) => setProvider(e.target.value)}>
+                        <option value="SWIFT">SWIFT</option>
                         </select>
                     </label>
                 </div>
