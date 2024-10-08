@@ -39,7 +39,10 @@ const PaymentForm = () => {
             setMessage('User is not logged in. Please log in to continue.');
             return;
         }
-
+ //___________code attribution___________
+//The following code was taken from Stack Overflow
+//Author:  Unkown
+//Link: https://stackoverflow.com/questions/54952355/how-to-post-data-from-react
         const paymentData = {
             amount: parseFloat(amount), // Ensure amount is a number
             currency,
@@ -67,12 +70,12 @@ const PaymentForm = () => {
                 console.error('Server response error:', errorData); // Debug server error
                 throw new Error(`Network response was not ok: ${errorData.message}`);
             }
-
+//___________end___________
             const result = await response.json();
-            console.log('Payment submitted successfully:', result); // Debug successful submission
+            console.log('Payment submitted successfully:', result); 
             setMessage('Payment recorded successfully!'); // Set success message
 
-            // Optionally reset form fields
+           
             setAmount('');
             setRecipientName('');
             setAccountNumber('');

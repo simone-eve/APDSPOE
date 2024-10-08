@@ -1,4 +1,4 @@
-// Import required packages
+
 import https from 'https';
 import fs from 'fs';
 import express from 'express';
@@ -13,21 +13,28 @@ import rateLimit from 'express-rate-limit';
 import { body, validationResult } from 'express-validator';
 
 const app = express();
-const port = 3000; // Set your preferred port
-
+const port = 3000; 
+//___________code attribution___________
+//The following code was taken from APDS7311 Lab Guide updated (2).pdf
+//Author: Varsity College
+//Link: null
 const options = {
   key: fs.readFileSync('keys/privatekey.pem'),
   cert: fs.readFileSync('keys/certificate.pem')
 }
+ //___________end___________
 
-// Middleware
+
 app.use(bodyParser.json());
 app.use(cors());
 app.use(helmet());
 app.use(morgan('combined')); 
 app.use(express.json());
 
-// MongoDB setup
+//___________code attribution___________
+//The following code was taken from Medium
+//Author: Naren Zadafiya
+//Link: https://medium.com/@zadafiya/how-to-connect-mongodb-with-node-js-a-comprehensive-guide-cdf4d099ae9b
 const url = 'mongodb://localhost:27017'; // Base MongoDB connection string without database
 const client = new MongoClient(url, { useUnifiedTopology: true });
 
@@ -42,15 +49,25 @@ async function connectToDb() {
 }
 
 connectToDb();
+ //___________end___________
 
+ //___________code attribution___________
+//The following code was taken from Medium
+//Author: Roman Voloboev
+//Link: https://medium.com/@animirr/brute-force-protection-node-js-examples-cd58e8bd9b8d
 const store = new ExpressBrute.MemoryStore(); 
 const bruteForce = new ExpressBrute(store, {
-  freeRetries: 5, // Allow up to 5 attempts
-  minWait: 60 * 60 * 1000,  // 5 seconds wait after failed attempts
-  maxWait: 60 * 60 * 1000, // Maximum 1-minute wait
-  lifetime: 60 * 60, // 1 hour before the retry count resets
+  freeRetries: 5,
+  minWait: 60 * 60 * 1000,  
+  maxWait: 60 * 60 * 1000, 
+  lifetime: 60 * 60, 
 });
+ //___________end___________
 
+  //___________code attribution___________
+//The following code was taken from Medium
+//Author: Code Miner
+//Link: https://medium.com/learn-to-earn/use-express-api-rate-limit-nodejs-63c75990763a#:~:text=Express%20API%20rate%20limit%20functions,and%20mitigating%20potential%20security%20threats.
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // Limit each IP to 100 requests per windowMs
@@ -60,33 +77,38 @@ const apiLimiter = rateLimit({
 });
 
 // Apply the rate limiter to specific routes
-app.use('/api/register', apiLimiter); // Apply to registration
-app.use('/api/login', apiLimiter); // Apply to login
-app.use('/api/payments', apiLimiter); // Apply to payment submission
+app.use('/api/register', apiLimiter); 
+app.use('/api/login', apiLimiter); 
+app.use('/api/payments', apiLimiter); 
+ //___________end___________
 
-// POST endpoint to handle user registration
+
 app.post('/api/register', bruteForce.prevent,  [
-  // Add validation rules using express-validator
+ //___________code attribution___________
+//The following code was taken from Medium
+//Author: Chau Nguyen
+//Link: https://howtodevez.medium.com/using-express-validator-for-data-validation-in-nodejs-6946afd9d67e#:~:text=express%2Dvalidator%20is%20a%20package,to%20validate%20API%20request%20parameters.
   body('userId').notEmpty().withMessage('User ID is required'),
   body('fullName').isString().withMessage('Full name must be a string'),
   body('idNumber').isLength({ min: 13, max: 13 }).withMessage('ID number must be 13 characters long'),
   body('accountNumber').isNumeric().withMessage('Account number must be numeric'),
   body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters long'),
+   //___________end___________
 ], async (req, res) => {
-  // Handle validation errors
+
   const errors = validationResult(req);
   
   if (!errors.isEmpty()) {
     // Extract error messages and join them as a single string
     const errorMessages = errors.array().map(error => error.msg).join(', ');
 
-    // Create an object with specific field errors
+    
     const formattedErrors = errors.array().reduce((acc, error) => {
       acc[error.param] = error.msg;
       return acc;
     }, {});
 
-    // Respond with a detailed error message and field-specific errors
+    
     return res.status(400).json({ message: `Validation failed: ${errorMessages}`, errors: formattedErrors });
   }
 
@@ -94,8 +116,8 @@ app.post('/api/register', bruteForce.prevent,  [
   const { userId, fullName, idNumber, accountNumber, password } = req.body;
 
 
-  const database = client.db('APD'); // Database name
-  const collection = database.collection('users'); // Collection name for users
+  const database = client.db('APD'); 
+  const collection = database.collection('users'); 
 
   try {
     // Check for existing user by ID number
@@ -104,15 +126,15 @@ app.post('/api/register', bruteForce.prevent,  [
       return res.status(400).json({ message: 'User with this ID number already exists' });
     }
 
-    const saltRounds = 10; // Define the cost factor for salting
+    const saltRounds = 10; 
     const salt = await bcrypt.genSalt(saltRounds); // Generates a unique salt for each user
   
     // Hash the password with the salt
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create a new user object
+    
     const newUser = {
-      userId, // Save userId to the database
+      userId,
       fullName,
       idNumber,
       accountNumber,
@@ -161,39 +183,39 @@ app.post('/api/login', bruteForce.prevent,[
   const errors = validationResult(req);
   
   if (!errors.isEmpty()) {
-    // Extract error messages and join them as a single string
+   
     const errorMessages = errors.array().map(error => error.msg).join(', ');
 
-    // Create an object with specific field errors
+  
     const formattedErrors = errors.array().reduce((acc, error) => {
       acc[error.param] = error.msg;
       return acc;
     }, {});
 
-    // Respond with a detailed error message and field-specific errors
+   
     return res.status(400).json({ message: `Validation failed: ${errorMessages}`, errors: formattedErrors });
   }
 
-  // Continue with login logic
+
   const { fullName, accountNumber, password } = req.body;
 
-  const database = client.db('APD'); // Your database name
+  const database = client.db('APD'); 
   const collection = database.collection('users');
 
   try {
-    // Find user by account number
+    
     const user = await collection.findOne({ accountNumber });
     if (!user) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    // Compare password
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    // Successful login, return user info
+    
     res.status(200).json({ message: 'Login successful', userId: user._id }); // Send user ID or any relevant info
   } catch (error) {
     console.error('Error logging in:', error);

@@ -11,6 +11,10 @@ function App() {
     <Router>
       <div className="App">
         <header className="App-header">
+{/* //___________code attribution___________
+//The following code was taken from Create-a-react-app
+//Author: Create-a-react-app
+//Link: https://create-react-app.dev/docs/adding-a-router/ */}
           <Routes>
             <Route path="/" element={<Register />} />
             <Route path="/login" element={<Login />} />
@@ -21,6 +25,7 @@ function App() {
         </header>
       </div>
     </Router>
+    
   );
 }
 

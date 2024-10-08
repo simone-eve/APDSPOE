@@ -1,7 +1,10 @@
 version: 2.1
 orbs:
   newman: postman/newman@1.0.0
-
+# code attribution
+# Adapted from APDS 2023
+# Author: Serena
+# https://github.com/VCSOIT/APDS2023.git
 jobs:
   # Job to say hello
   say-hello:
@@ -37,7 +40,7 @@ jobs:
             -Dsonar.sources="." \
             -Dsonar.java.binaries=build  # If using Java, specify the binaries path
 
-  # Job to run Postman tests
+  # -----end
   postman-tests:
     docker:
       - image: postman/newman:latest  # Use the official Newman Docker image
