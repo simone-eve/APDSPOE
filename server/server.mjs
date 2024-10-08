@@ -151,24 +151,24 @@ app.post('/api/register', bruteForce.prevent,  [
 });
 
 
-
-app.get('/api/payments', async (req, res) => {
-  const { accountNumber } = req.params;
-  console.log("Received accountNumber:", accountNumber); // Debugging
+// POST endpoint to handle payment form submission
+app.post('/api/payments', async (req, res) => {
   try {
-    const database = client.db('APD');
-    const collection = database.collection('PaymentForm');
-    const userPayments = await collection.find({ accountNumber }).toArray();
-    
-    console.log("Payments found:", userPayments); // Debugging
-    if (userPayments.length === 0) {
-      return res.status(404).json({ message: 'No payment records found' });
-    }
+    const database = client.db('APD'); // Database name
+    const collection = database.collection('PaymentForm'); // Collection name for payments
 
-    res.status(200).json(userPayments);
+    // Extract payment data from the request body
+    const paymentData = {
+      ...req.body,
+      userId: req.body.userId  // Accept userId, or set to null
+    };
+
+    // Insert the payment data into the collection
+    const result = await collection.insertOne(paymentData);
+    res.status(201).json({ message: 'Payment recorded successfully', insertedId: result.insertedId });
   } catch (error) {
-    console.error('Error fetching user payments:', error);
-    res.status(500).json({ message: 'Failed to fetch payments', error });
+    console.error('Error recording payment:', error);
+    res.status(500).json({ message: 'Failed to record payment', error });
   }
 });
 

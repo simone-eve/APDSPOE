@@ -7,22 +7,19 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true); // State to track loading
   const navigate = useNavigate();
 
-  // Get accountNumber from local storage
-  const accountNumber = localStorage.getItem('accountNumber'); 
+  // Replace with actual userId from login session or state management (e.g., Redux, Context API)
+  const userId = localStorage.getItem('userId') || 'someUserIdFromLogin'; 
 
   // Fetch payments for the logged-in user
   useEffect(() => {
     const fetchPayments = async () => {
       try {
-        console.log("Fetching payments for accountNumber:", accountNumber); // Debugging
-        const response = await fetch(`http://localhost:3000/api/payments/${accountNumber}`);
-        
+        console.log("Fetching payments for userId:", userId); // Debugging
+        const response = await fetch(`http://localhost:3000/api/payments/${userId}`);
         if (!response.ok) {
           throw new Error('Failed to fetch payments');
         }
-        
         const data = await response.json();
-        console.log("Fetched payments data:", data); // Debugging
         setPayments(data);
         setLoading(false);
       } catch (error) {
@@ -30,14 +27,13 @@ const Dashboard = () => {
         setLoading(false);
       }
     };
-    
     fetchPayments();
-  }, [accountNumber]);
-  
+  }, [userId]);
 
   if (loading) {
     return <div>Loading payments...</div>; // Show a loading state while fetching data
   }
+
 
   return (
     <div className="dashboard">

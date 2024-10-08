@@ -18,9 +18,6 @@ const PaymentForm = () => {
     const nameRegex = /^[a-zA-Z\s]*$/; // Only letters and spaces
     const accountNumberRegex = /^[0-9]*$/; // Only numbers
     const swiftCodeRegex = /^[A-Z0-9]*$/; // Only uppercase letters and numbers
-    const amountRegex = /^[0-9]+(\.[0-9]{1,2})?$/;
-    const recipientNameRegex = /^[a-zA-Z\s]+$/;
-    const bankNameRegex = /^[a-zA-Z\s]+$/;
 
     // Retrieve userId from local storage when the component mounts
     useEffect(() => {
@@ -111,7 +108,7 @@ const PaymentForm = () => {
                         <input
                             type="number"
                             value={amount}
-                            onChange={handleInputChange(setAmount, amountRegex)}
+                            onChange={(e) => setAmount(e.target.value)}
                             required
                             min="0" // Ensure the amount is non-negative
                         />
@@ -121,9 +118,11 @@ const PaymentForm = () => {
                     <label>
                         Currency:
                         <select value={currency} onChange={(e) => setCurrency(e.target.value)}>
+                            {/* Currency options... */}
                             <option value="USD">USD</option>
                             <option value="EUR">EUR</option>
                             <option value="GBP">GBP</option>
+                            {/* Add more currencies as needed */}
                         </select>
                     </label>
                 </div>
@@ -297,7 +296,7 @@ const PaymentForm = () => {
                         <input
                             type="text"
                             value={recipientName}
-                            onChange={handleInputChange(setRecipientName, recipientNameRegex)}
+                            onChange={handleInputChange(setRecipientName, nameRegex)}
                             required
                         />
                     </label>
@@ -321,7 +320,7 @@ const PaymentForm = () => {
                         <input
                             type="text"
                             value={bankName}
-                            onChange={handleInputChange(setBankName, bankNameRegex)}
+                            onChange={(e) => setBankName(e.target.value)}
                             required
                         />
                     </label>
