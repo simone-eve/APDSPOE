@@ -190,6 +190,20 @@ app.post('/api/login', bruteForce.prevent,[
   }
 });
 
+app.get('/api/payments/:userId', async (req, res) => {
+  const { userId } = req.params;
+  console.log("Received userId:", userId); // Debugging
+  try {
+    const database = client.db('APD');
+    const collection = database.collection('PaymentForm');
+    const userPayments = await collection.find({ userId }).toArray();
+    res.status(200).json(userPayments);
+  } catch (error) {
+    console.error('Error fetching user payments:', error);
+    res.status(500).json({ message: 'Failed to fetch payments', error });
+  }
+});
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
