@@ -46,9 +46,10 @@ jobs:
           command: npm install -g newman
       - run:
           name: "Run Postman Tests"
-           environment:
-            NO_PROXY: "localhost,127.0.0.1"
+          environment:
+            NO_PROXY: "localhost,127.0.0.1"  # Ensure this line is correctly indented
           command: newman run server/tests/APDS.PART2.postman_collection.json --insecure
+
 workflows:
   say-hello-workflow:
     jobs:
