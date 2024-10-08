@@ -129,7 +129,7 @@ const Register = () => {
           />
         </div>
         <div>
-          <label>User ID:</label>
+          <label>User ID (Optional):</label>
           <input
             type="text"
             value={userId}

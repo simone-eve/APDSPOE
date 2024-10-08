@@ -15,7 +15,7 @@ const Dashboard = () => {
     const fetchPayments = async () => {
       try {
         console.log("Fetching payments for userId:", userId); // Debugging
-        const response = await fetch(`http://localhost:3000/api/payments/${userId}`);
+        const response = await fetch(`https://localhost:3000/api/payments/${userId}`);
         if (!response.ok) {
           throw new Error('Failed to fetch payments');
         }
