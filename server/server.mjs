@@ -4,6 +4,11 @@ import { MongoClient } from 'mongodb';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import bcrypt from 'bcrypt';
+import ExpressBrute from 'express-brute';
+import helmet from 'helmet';
+import morgan from 'morgan';
+//import rateLimit from 'express-rate-limit';
+import { body, validationResult } from 'express-validator';
 
 const app = express();
 const port = 3000; // Set your preferred port
@@ -11,6 +16,8 @@ const port = 3000; // Set your preferred port
 // Middleware
 app.use(bodyParser.json());
 app.use(cors());
+app.use(helmet());
+app.use(morgan('combined')); 
 
 // MongoDB setup
 const url = 'mongodb://localhost:27017'; // Base MongoDB connection string without database
@@ -28,14 +35,56 @@ async function connectToDb() {
 
 connectToDb();
 
+const store = new ExpressBrute.MemoryStore(); 
+const bruteForce = new ExpressBrute(store, {
+  freeRetries: 5, // Allow up to 5 attempts
+  minWait: 60 * 60 * 1000,  // 5 seconds wait after failed attempts
+  maxWait: 60 * 60 * 1000, // Maximum 1-minute wait
+  lifetime: 60 * 60, // 1 hour before the retry count resets
+});
+
+// const apiLimiter = rateLimit({
+//   windowMs: 15 * 60 * 1000, // 15 minutes
+//   max: 100, // Limit each IP to 100 requests per windowMs
+//   message: 'Too many requests from this IP, please try again after 15 minutes',
+//   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+//   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+// });
+
+// // Apply the rate limiter to specific routes
+// app.use('/api/register', apiLimiter); // Apply to registration
+// app.use('/api/login', apiLimiter); // Apply to login
+// app.use('/api/payments', apiLimiter); // Apply to payment submission
+
 // POST endpoint to handle user registration
-app.post('/api/register', async (req, res) => {
+app.post('/api/register', bruteForce.prevent,  [
+  // Add validation rules using express-validator
+  body('userId').notEmpty().withMessage('User ID is required'),
+  body('fullName').isString().withMessage('Full name must be a string'),
+  body('idNumber').isLength({ min: 13, max: 13 }).withMessage('ID number must be 13 characters long'),
+  body('accountNumber').isNumeric().withMessage('Account number must be numeric'),
+  body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters long'),
+], async (req, res) => {
+  // Handle validation errors
+  const errors = validationResult(req);
+  
+  if (!errors.isEmpty()) {
+    // Extract error messages and join them as a single string
+    const errorMessages = errors.array().map(error => error.msg).join(', ');
+
+    // Create an object with specific field errors
+    const formattedErrors = errors.array().reduce((acc, error) => {
+      acc[error.param] = error.msg;
+      return acc;
+    }, {});
+
+    // Respond with a detailed error message and field-specific errors
+    return res.status(400).json({ message: `Validation failed: ${errorMessages}`, errors: formattedErrors });
+  }
+
+  // Extract user details from the request body
   const { userId, fullName, idNumber, accountNumber, password } = req.body;
 
-  // Validate user input
-  if (!userId || !fullName || !idNumber || !accountNumber || !password) {
-    return res.status(400).json({ message: 'All fields are required' });
-  }
 
   const database = client.db('APD'); // Database name
   const collection = database.collection('users'); // Collection name for users
@@ -69,6 +118,7 @@ app.post('/api/register', async (req, res) => {
 });
 
 
+
 // POST endpoint to handle payment form submission
 app.post('/api/payments', async (req, res) => {
   try {
@@ -91,13 +141,30 @@ app.post('/api/payments', async (req, res) => {
 });
 
 // POST endpoint to handle user login
-app.post('/api/login', async (req, res) => {
-  const { fullName, accountNumber, password } = req.body;
+app.post('/api/login', bruteForce.prevent,[
+  body('fullName').notEmpty().withMessage('Full name is required'),
+  body('accountNumber').isNumeric().withMessage('Account number must be numeric'),
+  body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters long'),
+], async (req, res) => {
+  // Handle validation errors
+  const errors = validationResult(req);
+  
+  if (!errors.isEmpty()) {
+    // Extract error messages and join them as a single string
+    const errorMessages = errors.array().map(error => error.msg).join(', ');
 
-  // Validate input
-  if (!fullName || !accountNumber || !password) {
-    return res.status(400).json({ message: 'All fields are required' });
+    // Create an object with specific field errors
+    const formattedErrors = errors.array().reduce((acc, error) => {
+      acc[error.param] = error.msg;
+      return acc;
+    }, {});
+
+    // Respond with a detailed error message and field-specific errors
+    return res.status(400).json({ message: `Validation failed: ${errorMessages}`, errors: formattedErrors });
   }
+
+  // Continue with login logic
+  const { fullName, accountNumber, password } = req.body;
 
   const database = client.db('APD'); // Your database name
   const collection = database.collection('users');
