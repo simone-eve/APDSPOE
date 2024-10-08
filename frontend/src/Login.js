@@ -11,6 +11,8 @@ const Login = () => {
     // Regex patterns for whitelisting
     const nameRegex = /^[a-zA-Z\s]*$/; // Allows only letters and spaces
     const accountNumberRegex = /^[0-9]*$/; // Allows only numbers
+    const passwordRegex = /^[A-Za-z\d@$!%*#?&]{8,}$/;
+
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -23,6 +25,10 @@ const Login = () => {
         }
         if (!accountNumberRegex.test(accountNumber)) {
             setError('Account Number can only contain digits.');
+            return;
+        }
+        if (!passwordRegex.test(password)) {
+            setError('Password must be 8 digits.');
             return;
         }
 
