@@ -104,8 +104,11 @@ app.post('/api/register', bruteForce.prevent,  [
       return res.status(400).json({ message: 'User with this ID number already exists' });
     }
 
-    // Hash the password before saving
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const saltRounds = 10; // Define the cost factor for salting
+    const salt = await bcrypt.genSalt(saltRounds); // Generates a unique salt for each user
+  
+    // Hash the password with the salt
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     // Create a new user object
     const newUser = {
@@ -217,10 +220,5 @@ app.get('/api/payments/:userId', async (req, res) => {
 let server = https.createServer(options, app)
 console.log(port)
 server.listen(port)
-//Start the server
-// app.listen(port, () => {
-//   console.log(`Server running on http://localhost:${port}`);
-// });
 
-export default app;
 
