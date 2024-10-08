@@ -34,8 +34,10 @@ const Register = () => {
 
     try {
       // Send data to the backend for registration
-      const response = await axios.post('http://localhost:3000/api/register', {
-        userId: finalUserId, // Send the final userId (either provided or generated)
+      
+      const response = await axios.post('https://localhost:3000/api/register', {
+        userId: uniqueUserId, // Include userId in the request
+
         fullName,
         idNumber,
         accountNumber,
