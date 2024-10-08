@@ -130,7 +130,7 @@ app.post('/api/register', bruteForce.prevent,  [
 
 
 
-app.get('/api/payments/:accountNumber', async (req, res) => {
+app.get('/api/payments', async (req, res) => {
   const { accountNumber } = req.params;
   console.log("Received accountNumber:", accountNumber); // Debugging
   try {
