@@ -1,4 +1,6 @@
 // Import required packages
+import https from 'https';
+import fs from 'fs';
 import express from 'express';
 import { MongoClient } from 'mongodb';
 import bodyParser from 'body-parser';
@@ -13,11 +15,17 @@ import { body, validationResult } from 'express-validator';
 const app = express();
 const port = 3000; // Set your preferred port
 
+const options = {
+  key: fs.readFileSync('keys/privatekey.pem'),
+  cert: fs.readFileSync('keys/certificate.pem')
+}
+
 // Middleware
 app.use(bodyParser.json());
 app.use(cors());
 app.use(helmet());
 app.use(morgan('combined')); 
+app.use(express.json());
 
 // MongoDB setup
 const url = 'mongodb://localhost:27017'; // Base MongoDB connection string without database
@@ -190,7 +198,12 @@ app.post('/api/login', bruteForce.prevent,[
   }
 });
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
-});
+let server = https.createServer(options, app)
+console.log(port)
+server.listen(port)
+//Start the server
+// app.listen(port, () => {
+//   console.log(`Server running on http://localhost:${port}`);
+// });
+
+export default app;
