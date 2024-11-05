@@ -35,8 +35,8 @@ app.use(express.json());
 //The following code was taken from Medium
 //Author: Naren Zadafiya
 //Link: https://medium.com/@zadafiya/how-to-connect-mongodb-with-node-js-a-comprehensive-guide-cdf4d099ae9b
-const url = 'mongodb://localhost:27017'; // Base MongoDB connection string without database
-const client = new MongoClient(url, { useUnifiedTopology: true });
+const url = 'mongodb+srv://simoneleroux2003:4IKn1Q2kBs44qaoE@apdscluster0.glasn.mongodb.net/?retryWrites=true&w=majority';
+const client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
 
 async function connectToDb() {
   try {
