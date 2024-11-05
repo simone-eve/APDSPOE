@@ -13,7 +13,7 @@ import rateLimit from 'express-rate-limit';
 import { body, validationResult } from 'express-validator';
 
 const app = express();
-const port = 3000; 
+const port = process.env.PORT || 3000;
 //___________code attribution___________
 //The following code was taken from APDS7311 Lab Guide updated (2).pdf
 //Author: Varsity College
